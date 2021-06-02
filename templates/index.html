@@ -1,0 +1,24 @@
+<html>
+    <head>
+        <title>Utec dbp10</title>
+    </head>
+    <body>
+
+        <form action="/create" method="GET">
+            <div>
+                <label for="description" >Description: </label>
+                <input type='texto' name="description"/>
+            </div>
+            <div>
+                <input type="submit" id="submit" value="Submit" />
+            </div>
+        </form>
+
+
+        <ul>
+            {% for d in data %}
+                <li>{{d.description}}</li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>
