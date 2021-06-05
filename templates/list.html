@@ -1,0 +1,46 @@
+<html>
+    <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   </head>
+
+    <body style = "background: url(https://image.myanimelist.net/ui/5LYzTBVoS196gvYvw3zjwLgAvBFCaQ-G87EPlpMcd2s)">
+<div class="container">
+    <label>La lista de <b>Usuario</b>:</label>
+    <ul id="lista">
+    <td style="padding: 10px;">
+            {% for m in data %}
+            <label >Nombre: {{s.nombre}}, Visto: {{s.visto}}</label><br>
+            {% endfor %}
+    </td></ul>
+    <br><br>
+    <label>Insertar nuevo manga:</label>
+    <form id="form">
+            <input type='texto' id="autor" name="autor" placeholder="Nombre del autor"/>
+            <input type='texto' id="npag" name="npag" placeholder="Número de páginas"/>
+            <input type='texto' id="genero" name="genero" placeholder="Género"/>
+            <select id="visto">
+                <option value="Visto"> Visto</option>
+                <option value="No Visto"> No Visto</option>
+            </select>
+            <input type="submit" id="submit" value="Submit" />
+        </form>
+
+        <div id="error" class="hidden" style="color: red; display:none">Algo ha salido mal!!!</div>
+    <br>
+    <label>Generar manga aleatorio:</label>
+    <br>
+    <form id="form2">
+            <input type='texto' id="prioridad" name="prioridad" placeholder="Nivel de prioridad"/>
+            <input type="submit" id="submit2" value="Submit" />
+        </form>
+
+</div>
+    </body>
+<script>
+    function random(){
+    }
+    </script>
+</script>
+</html>

@@ -25,12 +25,14 @@ class Lista(db.Model):
     username = db.Column(db.String(80), ForeignKey("clientes.username"), nullable=False)
     fecha= db.Column(db.String(80), nullable=False)
     nombre=db.Column(db.String(80), nullable=False)
-    visto=db.Column(db.Bool, nullable=False)
+    visto=db.Column(db.String(80), nullable=False)
 
 class Mangas(db.Model):
     __tablename__='Mangas'
     nombre=db.Column(db.String(80), nullable=False, primary_key=True)
     autor = db.Column(db.String(80), nullable=False)
+    genero =  db.Column(db.String(80), nullable=False)
+    npag = db.Column(db.String(80), nullable=False)
 
 db.create_all()
 
