@@ -1,5 +1,7 @@
 # Manga Lister
-
+<p align="center">
+  <img  src="portada.png">
+</p>
 ## Integrantes:
   * Denis Irala
   * Marcela Espinoza
