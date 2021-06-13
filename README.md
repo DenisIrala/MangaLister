@@ -33,7 +33,7 @@ introduzca el cliente.
 
 ## Información acerca de las tecnologías utilizadas en Front-end, Back-end y Base de datos.
 
-  * ### El nombre del script a ejecutar para iniciar la base de datos con datos.
+  * ### El nombre del script a ejecutar para iniciar la base de datos con datos. : script.py 
 
   * ### Información acerca de los API. Requests y respuestas de cada endpoint utilizado en el sistema.
 
@@ -42,6 +42,7 @@ introduzca el cliente.
 ## Forma de Autenticación.
 
 ## Manejo de errores HTTP: 500, 400, 300, 200, 100, etc
+
 
 ## Cómo ejecutar el sistema (Deployment scripts)
  *In development* 
