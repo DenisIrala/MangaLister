@@ -15,24 +15,29 @@
 
   Adicionalmente, una de la propiedades del proyecto es que permite filtrar los mangas ralacionandolo con otra tabla la cual posea los atributos de los mismos, tal como numero de paginas, genero, nombre del autor, etc. 
 
-  La pagina incluira una función de inicio de sesión con usuario y 
-contraseña para así mostrar la información correspondiente a 
-cada usuario. Asimismo, se añadirá una función "Dónde empezar" 
-que imprima un manga aleatorio según el nivel de prioridad que 
-introduzca el cliente.
+  La pagina incluira una función de inicio de sesión con usuario y contraseña para así mostrar la información correspondiente a cada usuario. Asimismo, se añadirá una sección de recomendaciones que mostrará mangas de acuerdo a los géneros con mayor presencia en la lista del usuario, los cuales se obtendrán de una lista prehecha de mangas.
 
 ## Objetivos principales 
 
-* Hacer que el usuario tenga una mejor organización en los mangas que ha leido y brindar recomendaciones dependiento de sus gustos.
+* Implementar un sistema de registro e inicio de sesión.
+* Implementar una base de datos relacional que permita visualizar una lista personalizada al usuario y que una interfaz que permita al usuario realizar CRUD con la misma.
+* Implementar una respuesta amigable a los errores.
+* Implementar un algoritmo que utilice las relaciones entre tablas para brindar una lista de recomendaciones al usuario.
 
 ## Misión
-
-* Hacer que el mundo conozca sobre el anime y que tenga una mejor organización.
+* Brindar un servicio que mejore la experiencia de los lectores de mangas que ha leido para así popularizar el rubro y promover la lectura de mangas
 
 ## Visión
+* Se facilitará el acceso a mangas ya sea a través de una lista personalizada que permite mejorar su organización o una sección de recomendaciones que le permite conocer nuevas franquicias.
 
 ## Información acerca de las tecnologías utilizadas en Front-end, Back-end y Base de datos.
+### Front end:
 
+### Back end:
+
+### Base de datos:
+
+...
   * ### El nombre del script a ejecutar para iniciar la base de datos con datos. : script.py 
 
   * ### Información acerca de los API. Requests y respuestas de cada endpoint utilizado en el sistema.
