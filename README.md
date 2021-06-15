@@ -11,9 +11,10 @@
 
 
 ## Descripción del proyecto
-  Esta web page permite al usuario establecer una constancia sobre los mangas que desea leer. Estos se guardan en una tabla que toma en cuanta la fecha, nombre del manga, nivel de prioridad asignada por el usuario, si el usuario la ha visto o no.
+Un manga es una historieta de origen japonés y es uno de los medios de entretenimiento más populares en aquella región. No obstante, debido al gran volumen de franquicias que existen, organizar un horario para poder leerlos todos es una tarea muy tediosa y trabajosa, es a partir de este problema que surge MangaList.
+  Esta web page permite al usuario establecer una constancia sobre los mangas que desea leer, los cuales se guardan en una tabla que toma en cuanta la fecha, nombre del manga, nivel de prioridad asignada por el usuario, si el usuario la ha visto o no.
 
-  Adicionalmente, una de la propiedades del proyecto es que permite filtrar los mangas ralacionandolo con otra tabla la cual posea los atributos de los mismos, tal como numero de paginas, genero, nombre del autor, etc. 
+  Adicionalmente, la web ofrece la capacidad filtrar los mangas según los atributos de los mismos, tal como numero de paginas, genero, nombre del autor, etc. 
 
   La pagina incluira una función de inicio de sesión con usuario y contraseña para así mostrar la información correspondiente a cada usuario. Asimismo, se añadirá una sección de recomendaciones que mostrará mangas de acuerdo a los géneros con mayor presencia en la lista del usuario, los cuales se obtendrán de una lista prehecha de mangas.
 
