@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <title>Mangas a recomendar</title>
+        <link rel="stylesheet" href="/static/style.css" type="text/css" media="all">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+        
+    </head>
+
+    <body>
+        <ul>
+            {% for i in recomendar_mangas %}
+                <li><b><i>{{i.titulo}}</i></b>
+                    <ul>
+                        <u><i>Editorial:</i></u>  {{i.editorial}}  / 
+                        <u><i>Autor:</i></u>  {{i.autor}} /
+                        <u><i>Año de publicaion:</i></u>  {{i.fecha_publicacion}} 
+                    </ul>
+                    <br>
+                </li>
+            {% endfor %}
+        </ul>
+    </body>
+
+
+
+</html>

@@ -5,12 +5,27 @@ from sqlalchemy import Table, Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 import json
 import sys
+import psycopg2
+from psycopg2 import Error
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123@localhost:5432/dbp10' #this may change depending on the name of the database
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+class Recomendados(db.Model):
+    __tablename__= 'recomendados'
+    titulo = db.Column(db.String(80), primary_key=True)
+    genero = db.Column(db.String(80), nullable=False)
+    editorial = db.Column(db.String(80), nullable=False)
+    autor = db.Column(db.String(80), nullable=False)
+    fecha_publicacion = db.Column(db.Integer, nullable=False)
+
+class prueba_recomendados(db.Model):
+    __tablename__= 'prueba_recomendados'
+    nombre = db.Column(db.String(80), nullable=False, primary_key=True)
+    genero =  db.Column(db.String(80), nullable=False)
 
 class Usuarios(db.Model):
     __tablename__ = 'clientes'
@@ -20,6 +35,8 @@ class Usuarios(db.Model):
 
     def __repr__(self):
         return f'<Todo: {self.username}>'
+
+
 
 class Lista(db.Model):
     __tablename__='lista'
@@ -35,12 +52,29 @@ class Mangas(db.Model):
     genero =  db.Column(db.String(80), nullable=False)
     npag = db.Column(db.String(80), nullable=False)
 
+
+
+
 db.create_all()
+
+@app.route('/recomendados',methods=['POST'])
+def recomendar():
+    buscar_manga = request.form.get('manga','')
+    return render_template('recomendados.html', recomendar_mangas = Recomendados.query.filter_by(genero=buscar_manga))
+
+"""  buscar_manga = request.form.get('manga','') 
+    mangas = [r.genero for r in db.session.query(buscar_manga).filter_by(name=buscar_manga)]
+    recomendar_mangas = []
+    for manga in mangas:
+        elementos = [r.genero for r in db.session.query(Recomendados).filter_by(titulo=manga).distinct()]
+        recomendar_mangas.append(elementos)
+    return render_template('index.html', recomendar_mangas=recomendar_mangas) """
+
 
 
 @app.route('/')
-def index_1():#line 83 overwriting function index
-    return render_template("index.html")
+def index():
+    return render_template('recomendar_search.html')
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -75,14 +109,6 @@ def create_manga_json():
     db.session.commit()
     return jsonify(description=mangas.description)
 
-@app.route('/todos/<todo_id>', methods=['GET'])
-def get_todo_by_id(todo_id):
-    todo =get_todo_by_id.query.get(todo_id)
-    return 'The todo is: ' + todo.description
-
-@app.route('/recordatorio') #line 42 overwriting function index
-def index():
-    return render_template('list.html', data=Lista.query.all())
 
 if __name__ == '__main__':
     app.run(host= "localhost", port=5002, debug=True)

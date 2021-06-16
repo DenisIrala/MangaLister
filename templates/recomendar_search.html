@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <title>Mangas a recomendar</title>
+        <link rel="stylesheet" href="/static/style.css" type="text/css" media="all">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    </head>
+
+    <body>
+
+        <form action="/recomendados" method="POST">
+            
+            <div>
+                <label for="manga"> Ingresar manga a recomendar </label>
+                <select name="manga"    >
+                    <option value="Shonen">Shonen</option>
+                    <option value="Seinen">Seinen</option>
+                    <option value="Shoujo">Shoujo</option>
+                    <option value="Josei">Josei</option>
+                </select>
+            </div>  
+
+
+            <div>
+                <br>
+                <input type="submit" id="manga" value="Buscar"/>
+            </div>
+            
+        </form>
+
+    </body>
+
+
+
+</html>
