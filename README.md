@@ -91,7 +91,7 @@ Si la contraseña ingresada no coincide con el email introducido, entonces se im
 ### Error por ingreso de email inexistente
 Si el email ingresado no se encuentra en la base de datos, entonces se imprimirá "El email no existe".
 
-  ```
+  ```python
  @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
