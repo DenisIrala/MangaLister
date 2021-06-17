@@ -278,4 +278,7 @@ def recomendar():
 
 if __name__ == '__main__':
     app.run(host= "localhost", port=5002, debug=True)
+<<<<<<< HEAD
     
+=======
+>>>>>>> ab07b0ff2814892747925f547745637d0ab91cad
