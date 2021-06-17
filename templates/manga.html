@@ -1,0 +1,32 @@
+{% extends "index.html" %}
+{% block title %}Bienvenid@ {{ user.username }} {% endblock %}
+{% block imagen_centro %}{% endblock %}
+{% block stilo_body %}{% endblock %}
+{% block navbar %}
+<nav class="navbar" >
+    <li><a id="user_main" href="/user">Listas</li>
+    <li><a id="biblioteca" href="/biblioteca">Biblioteca</a></li>
+    <li><a id="add" href="/add">Agregar Manga</a></li>
+    <li><a id="logout" href="/logout">Cerrar Sesión</a></li>
+</nav>
+{% endblock %}
+{% block content%}
+<div class="container_manga">
+    <h1>{{form.nombre_manga}}</h1>
+    <h2>Descipción: </h2><p>{{form.descripcion}}</p>
+    <h2>Autor: </h2><p>{{form.autor}}</p>
+    <h2>Número de Capítulos: </h2><p>{{form.nchap}}</p>
+    <h2>Estado: </h2><p>{{form.estado}}</p>    
+    <h2><a href="{{form.link}}"> Leer aquí </a></h2>
+
+    <form action="" method="POST">            
+        <input type="text" class="form_block" id="newestado" name="newestado">
+        <button type="submit" class="button_lista" value="cambiar" formaction="{{url_for('estado_upgrade', manga_id=form.id )}}">Cambiar Estado</button>
+       
+    </form>
+    
+
+
+</div>
+
+{% endblock %}

@@ -6,7 +6,7 @@
 ## Integrantes:
   * Denis Irala
   * Marcela Espinoza
-  * Tony Astuhuaman 
+  * Tony Astuhuamán 
   * Johar Barzola
 
 

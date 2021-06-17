@@ -1,0 +1,26 @@
+{% extends "index.html" %}
+{% block title %}biblioteca{% endblock %}
+{% block imagen_centro %}{% endblock %}
+{% block stilo_body %}{% endblock %}
+{% block navbar %}
+<nav class="navbar" >
+    <li><a id="user_main" href="/user">Listas</li>
+    <li><a id="biblioteca" href="/biblioteca">Biblioteca</a></li>
+    <li><a id="add" href="/add">Agregar Manga</a></li>
+    <li><a id="logout" href="/logout">Cerrar Sesión</a></li>
+    <form class = "search" method="POST">
+        <input type="text" autofocus="autofocus" name = "search_box">
+        <input type="submit" formaction="/search" value="Search">
+    </form>
+</nav>
+{% endblock %}
+{% block content%}
+<!--Mostrar manga-->
+<div class="manga_container">
+    {% for mangas in manga %}
+    <form action="{{url_for('get_manga', manga_id=mangas.id)}}">
+        <input type="submit" value="{{mangas.nombre_manga}}">       
+    </form>
+    {% endfor %}
+</div>
+{% endblock %}

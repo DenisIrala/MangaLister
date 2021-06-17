@@ -1,0 +1,18 @@
+{% extends "index.html" %}
+{% block title %} {% endblock %}
+{% block imagen_centro %}{% endblock %}
+{% block stilo_body %}{% endblock %}
+{% block navbar %}
+<nav class="navbar" >
+    <li><a id="user_main" href="/user">Listas</li>
+    <li><a id="biblioteca" href="/biblioteca">Biblioteca</a></li>
+    <li><a id="add" href="/add">Agregar Manga</a></li>
+    <li><a id="logout" href="/logout">Cerrar Sesión</a></li>
+</nav>
+{% endblock %}
+{% block content%}
+<div class="container_lista_manga">
+    <h1>{{form.nombre_lista}}</h1>
+
+</div>
+{% endblock %}

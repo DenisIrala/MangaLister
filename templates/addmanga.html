@@ -1,0 +1,29 @@
+{% extends "user_main.html" %}
+{% block title %}biblioteca{% endblock %}
+{% block imagen_centro %}{% endblock %}
+{% block stilo_body %}{% endblock %}
+{% block recomendados %}{%endblock%}
+{% block content%}
+<div class="formulario_register form_manga">
+    <form method="POST"> 
+        <h3 align="center">Agregar Nuevo Manga</h3>
+        <label class="form_label" for="nombre_manga">Nombre</label><br/>
+        <input type="text" class="form_block" id="nombre_manga" name="nombre_manga" placeholder="Nombre_manga">
+    
+        <label class="form_label" for="descripcion">Descripcion</label><br/>
+        <input type="text" class="form_block" id="descripcion" name="descripcion" placeholder="Descripcion">
+        
+        <label class="form_label" for="autor">Autor</label><br/>
+        <input type="text" class="form_block" id="autor" name="autor" placeholder="Autor">
+        
+        <label class="form_label" for="nchap">Cantida de Capítulos</label><br/>
+        <input type="number" class="form_num" id="nchap" name="nchap" placeholder="Nchap">
+        
+        <label class="form_label" for="link">link</label><br/>
+        <input type="url" class="form_num" id="link" name="link" placeholder="Link">
+    
+        <button type="submit" class="button_enviar">Enviar</button>
+        
+    </form>
+    </div>
+{% endblock %}
