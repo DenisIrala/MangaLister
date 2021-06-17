@@ -33,11 +33,13 @@ Un manga es una historieta de origen japonés y es uno de los medios de entreten
 
 ## Información acerca de las tecnologías utilizadas en Front-end, Back-end y Base de datos.
 ### Front end:
+HTML, CSS, JavaScript
 
 ### Back end:
+flask, SQLAlchemy, (Host: AWS)
 
 ### Base de datos:
-
+Postgres (Host: RDS)
 ...
   * ### El nombre del script a ejecutar para iniciar la base de datos con datos. : script.py 
 
@@ -47,6 +49,24 @@ Un manga es una historieta de origen japonés y es uno de los medios de entreten
 El host usado para la aplicación python fue Amazon Web Services (AWS), mientras que el servicio usado para la base de datos remota fue Amazon RDS.
 
 ## Forma de Autenticación.
+Para este proyecto se decidió usar un sistema de usuario y contraseña con el fin de proteger la seguridad de la información. De esta forma, una contraseña única permite autenticar al usuario a través del siguiente código:
+  ```python
+ @app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        user = User.query.filter_by(email = email).first()
+        if user:
+            if check_password_hash(user.password, password):
+                flash('Inicio de sesión aprobado', category='accepted')#evaluar si dejarlo o no 
+                login_user(user, remember=True)
+                return redirect(url_for('user_main'))
+            else:
+                flash('Contraseña incorrecta, intente de nuevo', category='fail')
+        else:
+            flash('El email no existe', category='fail')
+  ```
 
 
 ## Manejo de errores HTTP: 500, 400, 300, 200, 100, etc
