@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Manga Lister
 <p align="center">
   <img  src="portada.png">
@@ -136,7 +135,3 @@ def login():
 ## Cómo ejecutar el sistema (Deployment scripts)
  Dado que se usa una base de detos remota, entonces no es necesario ejecutar ningún archivo. No obstante, si se desea ejecutar el sistema desde el entorno local, entonces habría que  el archivo script.py, el cual crea la base de datos MangaList.
 
-=======
-# DBPProyecto
-# DBPProyecto
->>>>>>> refs/remotes/origin/main
