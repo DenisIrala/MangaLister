@@ -1,27 +1,37 @@
-#!/usr/bin/env python3
 from datetime import timezone
 from operator import or_, sub
-from flask import Flask, render_template, request, flash, redirect, url_for 
+from os import error
+from typing import List
+from flask import Flask, render_template, request, flash, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Table, Column, Integer, ForeignKey, or_, update
+from sqlalchemy import Table, Column, Integer, ForeignKey, or_, update, insert
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql import func
 from flask_login import UserMixin, login_manager, login_user, login_required, logout_user, current_user, LoginManager
-from sqlalchemy.sql.expression import select, true
+from sqlalchemy.sql.expression import false, select, true
 from sqlalchemy.sql.functions import user
 from sqlalchemy.sql.schema import MetaData
 from werkzeug.security import generate_password_hash, check_password_hash #hash = no inverse 
 from flask_migrate import Migrate, current
-
 import sys
+import json
+import psycopg2 
 
-#APP
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret key' #averiguar bien sus usos
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:12345678@mangalist.cohth3owbwy4.us-east-2.rds.amazonaws.com:5432/mangalist0' #this may change depending on the name of the database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123@localhost:5432/dbpweb' #this may change depending on the name of the database
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+
+connection = psycopg2.connect(
+    host="localhost",
+    database="dbpweb",
+    user="postgres",
+    password="123")
+cursor = connection.cursor()
+
 
 
 #DATABASE
@@ -30,18 +40,13 @@ lista_manga = db.Table('lista_manga',
                         db.Column('listaid', db.Integer, db.ForeignKey('Lista.id'), primary_key = True),
                         db.Column('mangaid', db.Integer, db.ForeignKey('Manga.id'), primary_key = True)
 )
-manga_genero = db.Table('manga_genero', 
-                        db.Column('mangaid', db.Integer, db.ForeignKey('Manga.id'), primary_key = True),
-                        db.Column('generoid', db.Integer, db.ForeignKey('Genero.id'), primary_key = True)
-)
 class User(db.Model, UserMixin):
     __tablename__ = 'User'
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String(100), nullable=False)
     password =  db.Column(db.String(150), nullable=False)
     email = db.Column(db.String(150), unique=True) 
-    listas = db.relationship('Lista', backref = "user", lazy = 'select') #one to many 
-    
+    listas = db.relationship('Lista', backref = "user", lazy = 'select') #one to many     
    
 class Lista(db.Model):
     __tablename__='Lista'
@@ -49,8 +54,7 @@ class Lista(db.Model):
     fecha = db.Column(db.DateTime(timezone=True), default=func.now())
     nombre_lista = db.Column(db.String(80), nullable = False)
     usuario_id = db.Column(db.Integer, ForeignKey('User.id'))
-    mangas = db.relationship('Manga', secondary = lista_manga, backref= "listas", lazy = 'select' )
-     
+    mangas = db.relationship('Manga', secondary = lista_manga, backref= "listas", lazy = 'select' )     
 
 class Manga(db.Model):
     __tablename__='Manga'
@@ -59,72 +63,164 @@ class Manga(db.Model):
     descripcion = db.Column(db.String(255))
     link = db.Column(db.String(255))
     autor = db.Column(db.String(80), nullable=False)
-    estado = db.Column(db.String(80))     
+    estado = db.Column(db.String(80)) 
     nchap = db.Column(db.Integer, nullable=False)
-    generos = db.relationship('Genero', secondary = manga_genero, backref= "generos", lazy = 'select' )
-   
-    
-class Genero(db.Model):
-    __tablename__ = 'Genero'
-    id = db.Column(db.Integer, primary_key = True)
-    genero = db.Column(db.String(80), nullable = False)
+    demografia = db.Column(db.String(80), nullable=False)
 
-class Recomendados(db.Model):
-    __tablename__= 'recomendados'
-    titulo = db.Column(db.String(80), primary_key=True)
-    genero = db.Column(db.String(80), nullable=False)
-    editorial = db.Column(db.String(80), nullable=False)
-    autor = db.Column(db.String(80), nullable=False)
-    fecha_publicacion = db.Column(db.Integer, nullable=False)
+
 #
 login_manager = LoginManager()
-login_manager.login_view = 'index_1'
+login_manager.login_view = 'inicio'
 login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id)) #como cargamos un usuario, por default busca el id.  
 
-#VIEWS
+#General
+@app.route('/inicio') #biblioteca
+def inicio():
+    manga = Manga.query.filter_by().all()
+    return render_template("biblioteca.html", user = current_user, manga = manga)
 
 @app.route('/')
 def index_1():
-    return render_template("index.html", user = current_user)
+    return render_template("base1.html", user = current_user)
 
-@app.route('/user', methods=['POST', 'GET'])
+@app.route('/listas')
 @login_required
-def user_main():
-    if request.method == 'POST':
-        lista_nombre = request.form.get('addlista')
-        lista = Lista.query.filter_by(nombre_lista = lista_nombre, usuario_id = current_user.id).first()
-        if lista:
-            flash('El nombre de la lista ya existe', category='fail') 
-        else: 
-            new_lista = Lista(nombre_lista = lista_nombre, usuario_id = current_user.id)
-            db.session.add(new_lista)
-            db.session.commit()
-            flash('Lista añadida', category='accepted')
-    return render_template("user_main.html", user=current_user)
+def listas():
+    listas = Lista.query.filter_by(usuario_id = current_user.id).all()
+    return render_template("lista.html", user = current_user, listas  = listas)
 
-@app.route('/biblioteca', methods=['POST', 'GET'])
+#Recomendados 
+@app.route('/recomendados',methods=['POST'])
 @login_required
-def biblioteca():
-    manga = Manga.query.filter_by().all()
+def recomendar():
+    buscar_manga = request.form.get('manga','')
+    return render_template('recomendados.html', recomendar_mangas = Manga.query.filter_by(demografia=buscar_manga))
 
-    return render_template("biblioteca.html", manga = manga)
+#actualizar estado 
+@app.route('/update_estado', methods = ['POST'])
+def update_estado():
+    response = {}
+    try: 
+        data = {'estado': request.get_json()['estado']  , 'manga_id': request.get_json()['manga_id'] }
+        cursor.execute('UPDATE "Manga" SET estado = %(estado)s WHERE id = %(manga_id)s', data )      
+        connection.commit()  
+    except:
+        connection.rollback()
+        print(sys.exc_info())
+    return jsonify(response)
 
-@app.route('/add', methods=['POST', 'GET'])
+#añadir mangas a listas
+@app.route('/manga_lista', methods = ['POST'])
+def manga_lista():
+    response = {}
+    try: 
+        data = {'lista_id': request.get_json()['lista_id']  , 'manga_id': request.get_json()['manga_id'] }
+        cursor.execute('INSERT INTO lista_manga(listaid, mangaid) VALUES (%(lista_id)s, %(manga_id)s)', data )      
+        connection.commit()  
+    except:
+        connection.rollback()
+        print(sys.exc_info())
+    return jsonify(response)
+
+#Obtener listas y filtrar listas_mangas
+@app.route('/lista/<int:lista_id>')
 @login_required
-def add():
+def get_lista(lista_id):
+    d = {'lista_id':lista_id}
+    data = []
+    lista = Lista.query.filter_by(id = lista_id).first()
+    cursor.execute('SELECT nombre_manga, id FROM "Manga" WHERE id IN (SELECT mangaid FROM lista_manga WHERE listaid = %(lista_id)s)', d)
+    for row in cursor:
+        data.append(row)
+    connection.commit()
+    return render_template("lista_detalles.html", user=current_user, lista = lista, mangas = data )
+
+#eliminar mangas de listas
+@app.route('/<lista_id>/<todo_id>/delete-manga')
+@login_required
+def delete_todo_by_id(todo_id, lista_id):
+    try:
+        data = {'mangaid': todo_id}
+        cursor.execute('DELETE FROM lista_manga WHERE mangaid = %(mangaid)s', data)
+        connection.commit()
+    except:
+        connection.rollback()
+    return redirect(url_for('get_lista', lista_id = lista_id))
+
+
+#Eliminar lista 
+@app.route('/eliminar_lista/<lista_id>')
+@login_required
+def delete_lista(lista_id):
+    try:
+        data = {'listaid': lista_id}
+        cursor.execute('DELETE FROM lista_manga WHERE listaid = %(listaid)s', data)
+        cursor.execute('DELETE FROM "Lista" WHERE id = %(listaid)s', data)
+        connection.commit()
+    except:
+        connection.rollback()
+    return redirect(url_for('listas'))
+
+#Modificar lista 
+@app.route('/update_lista', methods = ['POST'])
+@login_required
+def update_lista():
+    response = {}
+    try:
+        lista_id = request.get_json()['lista_id']
+        usuario = request.get_json()['usuario']    
+        listas = Lista.query.filter_by(id = lista_id, usuario_id = usuario ).first() 
+        listas.nombre_lista = request.get_json()['new_nombre']        
+        db.session.commit()  
+    except:
+        db.session.rollback()
+        print(sys.exc_info())
+    finally:
+        db.session.close()
+    return jsonify(response)
+
+
+#¿Control de errores?
+@app.route('/crear_lista', methods = ['POST'])
+def crear_lista():
+    response = {}
+    try:
+        nombre_lista = request.get_json()['nombre_lista'] 
+        usuario = request.get_json()['usuario']    
+        form = Lista(nombre_lista = nombre_lista, usuario_id = usuario)            
+        db.session.add(form)
+        db.session.commit()  
+    except:
+        db.session.rollback()
+        print(sys.exc_info())
+    finally:
+        db.session.close()
+    return jsonify(response)
+
+
+#Mostrar detalles de manga
+@app.route('/manga/<int:manga_id>')
+@login_required
+def get_manga(manga_id):
+    mangas = Manga.query.filter_by(id = manga_id).first()
+    listas = Lista.query.filter_by(usuario_id = current_user.id).all()
+    return render_template("manga.html", user=current_user, form = mangas, listas = listas)
+
+#Añadir manga a la base de datos
+@app.route('/agregar_manga', methods = ['POST', 'GET'])
+@login_required
+def agregar_manga():
     if request.method == 'POST':
         nombre_manga = request.form.get('nombre_manga')
         descripcion = request.form.get('descripcion')
         autor = request.form.get('autor')
-        #estado = request.form.get('estado')
         nchap = request.form.get('nchap')
         link = request.form.get('link')
-        #generos = request.form.get('genero')
-        
+        demografia = request.form.get('demografia')  
         manga = Manga.query.filter_by(nombre_manga = nombre_manga).first()
         if manga:
             flash('El manga ya está registrado', category='fail')
@@ -133,99 +229,24 @@ def add():
                                 descripcion = descripcion, 
                                 autor = autor, 
                                 nchap = nchap, 
+                                demografia = demografia,
                                 link = link) 
             db.session.add(new_manga)
             db.session.commit()
             flash('Manga añadido a la base de datos exitosamente', category='accepted')
-            return redirect(url_for('biblioteca'))        
+            return redirect(url_for('inicio'))        
     return render_template("addmanga.html")
-#REVISAR_no funciona
-@app.route('/search', methods=['POST', 'GET']) 
-@login_required
-def search():
-    if request.method == 'POST':
-        busqueda = request.form
-        buscar = "%{}%".format(busqueda['search_box'])
-        resultados = Manga.query.filter(or_(Manga.nombre_manga.like(buscar), 
-                                        Manga.descripcion.like(buscar), 
-                                        Manga.autor.like(buscar) )).all()
-        return render_template("biblioteca.html", Manga = resultados)            
-    else:
-        flash('El manga no se encuentra en la base de datos. Sin embargo, es capaz de añadirlo', category='fail')
-        return redirect(url_for('biblioteca')) 
 
-#mostrar manga o lista por id 
-@app.route('/lista/<int:lista_id>/show')
-@login_required
-def show_lista(lista_id):
-    listas = Lista.query.filter_by(id = lista_id).first() 
-    return render_template("lista.html", user=current_user, form = listas)
-
-@app.route('/manga/<int:manga_id>')
-@login_required
-def get_manga(manga_id):
-    mangas = Manga.query.filter_by(id = manga_id).first()
-    return render_template("manga.html", user=current_user, form = mangas)
-
-@app.route('/manga/<int:manga_id>/update', methods=['POST', 'GET'])
-@login_required
-def estado_upgrade(manga_id):   
-    if request.method == 'POST':
-        mangas = Manga.query.filter_by(id=manga_id).first() 
-        newestado = request.form.get('newestado')
-        if len(newestado)>10:
-            flash('Se recomienda ingresar "Leido, "Abandonado", "Favorito", "Pendiente", "Siguiendo"', category='fail')
-        else:
-            mangas.estado = newestado
-            db.session.commit()
-    return render_template("manga.html", user=current_user, form = mangas)
-
-#editar una lista
-@app.route('/lista/<int:lista_id>')
-@login_required
-def get_lista(lista_id):
-    listas = Lista.query.filter_by(id = lista_id).first() 
-    return render_template("update_list.html", user=current_user, form = listas)
-
-@app.route('/lista/<int:lista_id>/delete', methods=['POST', 'GET'])
-@login_required
-def delete_lista(lista_id):
-    if request.method == 'POST':
-        listas = Lista.query.filter_by(id = lista_id).first() 
-        db.session.delete(listas)
-        db.session.commit()
-    return render_template("user_main.html", user=current_user)
-
-
-@app.route('/lista/<int:lista_id>/update', methods=['POST', 'GET'])
-@login_required
-def update_lista(lista_id):   
-    if request.method == 'POST':
-        listas = Lista.query.filter_by(id = lista_id).first() 
-        listas.nombre_lista = request.form.get('newname')
-        db.session.commit()
-    return render_template("user_main.html", user=current_user, form = listas)
-
-
-
-#INICIO
-
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return render_template("index.html")
-
+#Registro
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
         email = request.form.get('email')
         username = request.form.get('username')
         password = request.form.get('password') 
-
         user = User.query.filter_by(email = email).first()
         if user:
-            flash('El email ya existe', category='fail')
+            flash('El usuario ya existe', category='fail')
 
         if len(email) < 10:
             flash('Por favor, ingrese un correo válido', category='fail')
@@ -239,10 +260,9 @@ def register():
             db.session.commit()
             login_user(new_user, remember=True)
             flash('Cuenta creada', category='accepted')
-            return redirect(url_for('user_main'))
-
+            return redirect(url_for('inicio')) 
     return render_template("register.html", user = current_user)
-
+#Login
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
@@ -253,32 +273,21 @@ def login():
             if check_password_hash(user.password, password):
                 flash('Inicio de sesión aprobado', category='accepted')#evaluar si dejarlo o no 
                 login_user(user, remember=True)
-                return redirect(url_for('user_main'))
+                return redirect(url_for('inicio'))
             else:
                 flash('Contraseña incorrecta, intente de nuevo', category='fail')
         else:
             flash('El email no existe', category='fail')
-
-
     return render_template("login.html", user = current_user)
+#logout
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return render_template("base1.html")
 
-@app.route('/recomendados',methods=['POST'])
-def recomendar():
-    buscar_manga = request.form.get('manga','')
-    return render_template('Recomendados.html', recomendar_mangas = Recomendados.query.filter_by(genero=buscar_manga))
 
-"""  buscar_manga = request.form.get('manga','') 
-    mangas = [r.genero for r in db.session.query(buscar_manga).filter_by(name=buscar_manga)]
-    recomendar_mangas = []
-    for manga in mangas:
-        elementos = [r.genero for r in db.session.query(Recomendados).filter_by(titulo=manga).distinct()]
-        recomendar_mangas.append(elementos)
-    return render_template('index.html', recomendar_mangas=recomendar_mangas) """
 
 
 if __name__ == '__main__':
     app.run(host= "localhost", port=5002, debug=True)
-<<<<<<< HEAD
-    
-=======
->>>>>>> ab07b0ff2814892747925f547745637d0ab91cad

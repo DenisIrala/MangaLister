@@ -1,18 +1,71 @@
-{% extends "index.html" %}
-{% block title %} {% endblock %}
-{% block imagen_centro %}{% endblock %}
-{% block stilo_body %}{% endblock %}
-{% block navbar %}
-<nav class="navbar" >
-    <li><a id="user_main" href="/user">Listas</li>
-    <li><a id="biblioteca" href="/biblioteca">Biblioteca</a></li>
-    <li><a id="add" href="/add">Agregar Manga</a></li>
-    <li><a id="logout" href="/logout">Cerrar Sesión</a></li>
-</nav>
-{% endblock %}
+{% extends "base2.html" %}
+{% block title %}Listas de {{ user.username }} {% endblock %}
 {% block content%}
-<div class="container_lista_manga">
-    <h1>{{form.nombre_lista}}</h1>
 
+<br><br>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Mis Listas </h2>
+  </div>
+  <div class="card-body">
+    <p><a href="javascript:abrir()">Crear nueva lista</a></p>
+    <div class="ventana" id="show_ventana">
+      
+    
+    <form  id="form_addlista">
+        <input type="text" id="addlista" name="addlista">
+        <button type="submit" class="button_lista"  id="button_lista" value="submit">Crear</button>
+        <!--<button type="submit" class="button_lista" id="button_lista" value="submit">Crear</button>-->
+        <div id="cerrar_ventana">
+          <a class="btn btn-outline-warning" href="javascript:cerrar()" role="button">x</a>
+        </div>
+    </form>
+   
 </div>
+  </div>
+</div>
+
+
+<div class="mostrar_listas_personales">
+    {% for lista in listas %}
+        
+          <br>
+          <button type="button" class="btn btn-dark" >
+            <a class= "listasMangas"href="{{url_for('get_lista', lista_id=lista.id)}}">{{lista.nombre_lista}}</a>
+            
+          </button>
+          <br>
+    {% endfor %}
+</div>
+
+
+<script>
+    function abrir(){
+        document.getElementById("show_ventana").style.display="block";
+    }
+    function cerrar(){
+        document.getElementById("show_ventana").style.display="none";
+    }
+
+    document.getElementById("form_addlista").onsubmit = function(e){
+        e.preventDefault();
+        fetch('/crear_lista', {
+            method: 'POST',
+            body: JSON.stringify({
+                'nombre_lista': document.getElementById('addlista').value,
+                'usuario': "{{user.id}}"
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(response){
+            return response.json()
+        }).then(function(jsonResponse) {
+            console.log(jsonResponse)  
+                      
+        });
+    };
+    
+</script> 
 {% endblock %}

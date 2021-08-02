@@ -1,26 +1,35 @@
-{% extends "index.html" %}
-{% block title %}biblioteca{% endblock %}
-{% block imagen_centro %}{% endblock %}
-{% block stilo_body %}{% endblock %}
-{% block navbar %}
-<nav class="navbar" >
-    <li><a id="user_main" href="/user">Listas</li>
-    <li><a id="biblioteca" href="/biblioteca">Biblioteca</a></li>
-    <li><a id="add" href="/add">Agregar Manga</a></li>
-    <li><a id="logout" href="/logout">Cerrar Sesión</a></li>
-    <form class = "search" method="POST">
-        <input type="text" autofocus="autofocus" name = "search_box">
-        <input type="submit" formaction="/search" value="Search">
-    </form>
-</nav>
-{% endblock %}
+{% extends "base2.html" %}
+{% block title %}Bienvenid@ {{ user.username }} {% endblock %}
 {% block content%}
-<!--Mostrar manga-->
+<h2>Filtrar por demografia</h2>
+<div class="recomendados_container">
+    <form action="/recomendados" method="POST">            
+        <div>
+            <label for="manga"> Seleccione demografia </label>
+            <select name="manga"    >
+                <option value="Shonen">Shonen</option>
+                <option value="Seinen">Seinen</option>
+                <option value="Shoujo">Shoujo</option>
+                <option value="Josei">Josei</option>
+            </select>
+        </div>  
+        <div>
+            <br>
+            <input type="submit" id="manga" value="Buscar"/>
+        </div>
+        
+    </form>
+    
+</div>
+<h2>Mangas</h2>
 <div class="manga_container">
     {% for mangas in manga %}
-    <form action="{{url_for('get_manga', manga_id=mangas.id)}}">
-        <input type="submit" value="{{mangas.nombre_manga}}">       
+    <form action="{{url_for('get_manga', manga_id=mangas.id)}}" id="add_manga_lista">
+        <br>      
+        <button type="submit" class="btn btn-secondary" value="{{mangas.nombre_manga}}">{{mangas.nombre_manga}}</button>
+        <br>    
     </form>
     {% endfor %}
 </div>
+  
 {% endblock %}

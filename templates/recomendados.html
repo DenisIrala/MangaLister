@@ -1,0 +1,14 @@
+{% extends "base2.html" %}
+{% block title %}Recomendados{% endblock %}
+{% block content%}
+    {% for i in recomendar_mangas %}
+    <li><b><i>{{i.nombre_manga}}</i></b>
+        <ul>
+            <u><i>Descripcion:</i></u>  {{i.descripcion}}  / 
+            <u><i>Autor:</i></u>  {{i.autor}} /
+            <u><i>Cantidad de capitulos:</i></u>  {{i.nchap}} 
+        </ul>
+        <br>
+    </li>
+    {% endfor %}
+{% endblock %}

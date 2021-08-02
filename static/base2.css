@@ -1,0 +1,55 @@
+body {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 10px;
+    background: linear-gradient(135deg, #71b7e6, #9b59b6) ; /*Verificar porque no lo considera*/
+}
+.button_lista {
+    
+    background-color: #c060e6; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+} /* Gray */
+.btn-outline-warning{
+  display: inline;
+   padding: 0 20px;
+}
+.listasMangas{
+    text-decoration: none;
+}
+.navbar-default{
+    color:#ffffff;
+}
+.ventana{
+      background-color: rgb(38, 174, 204);
+      width: 50%;
+      display: none;
+  
+}
+#cerrar_ventana{
+      position: absolute;
+}
+.hidden {
+      display: none;
+}
+  
+.button_enviar {
+    background: black;
+    color: white;
+    padding: 8px 20px;
+    cursor: pointer;
+    border: none;
+    display: block;
+    width: 100%;
+    font-size: 1.3em;
+    margin-top: 20px;
+}
+  
+.button_enviar:hover{
+    background: red;
+}

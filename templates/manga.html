@@ -1,32 +1,82 @@
-{% extends "index.html" %}
-{% block title %}Bienvenid@ {{ user.username }} {% endblock %}
-{% block imagen_centro %}{% endblock %}
-{% block stilo_body %}{% endblock %}
-{% block navbar %}
-<nav class="navbar" >
-    <li><a id="user_main" href="/user">Listas</li>
-    <li><a id="biblioteca" href="/biblioteca">Biblioteca</a></li>
-    <li><a id="add" href="/add">Agregar Manga</a></li>
-    <li><a id="logout" href="/logout">Cerrar Sesión</a></li>
-</nav>
-{% endblock %}
+{% extends "base2.html" %}
+{% block title %}{{form.nombre_manga}}{% endblock %}
 {% block content%}
 <div class="container_manga">
     <h1>{{form.nombre_manga}}</h1>
     <h2>Descipción: </h2><p>{{form.descripcion}}</p>
     <h2>Autor: </h2><p>{{form.autor}}</p>
     <h2>Número de Capítulos: </h2><p>{{form.nchap}}</p>
-    <h2>Estado: </h2><p>{{form.estado}}</p>    
-    <h2><a href="{{form.link}}"> Leer aquí </a></h2>
-
-    <form action="" method="POST">            
-        <input type="text" class="form_block" id="newestado" name="newestado">
-        <button type="submit" class="button_lista" value="cambiar" formaction="{{url_for('estado_upgrade', manga_id=form.id )}}">Cambiar Estado</button>
-       
-    </form>
+    <h2>Demografia: </h2><p>{{form.demografia}}</p>    
+    <h2>Estado: </h2>
+    <select id="estado">
+        <option value=" ">--------</option>
+        <option value="Siguiendo">Siguiendo</option>
+        <option value="Completo">Completo</option>
+        <option value="Abandonado">Abandonado</option>
+    </select>
+    <h2><a class="btn btn-primary" href="{{form.link}}" target="_blank"> Leer aquí </a></h2>  
     
+</div>
+<div class="agregar_a_lista">
+    <a class="btn btn-outline-secondary" href="javascript:abrir()">Agregar a lista</a>
+    <div class="ventana" id="show_ventana">
+        <div id="cerrar_ventana"><a href="javascript:cerrar()">&cross;</a></div>
+        <select id="lista_manga">
+            {% for lista in listas%}  
+                <option value="{{lista.id}}">{{lista.nombre_lista}}</option>          
+            {% endfor %}            
+
+        </select>
+        
+        
+    </div>
 
 
 </div>
+<script>
+    function abrir(){
+        document.getElementById("show_ventana").style.display="block";
+    }
+    function cerrar(){
+        document.getElementById("show_ventana").style.display="none";
+    }
+    document.getElementById("lista_manga").onchange= function(e){
+        e.preventDefault();
+        fetch('/manga_lista', {
+            method: 'POST',
+            body: JSON.stringify({
+                'lista_id': document.getElementById("lista_manga").value,
+                'manga_id': "{{form.id}}"
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(response){
+            return response.json()
+        }).then(function(jsonResponse) {
+            console.log(jsonResponse)            
+        });
+    }
+    document.getElementById("estado").onchange= function(e){
+        e.preventDefault();
+        fetch('/update_estado', {
+            method: 'POST',
+            body: JSON.stringify({
+                'estado': document.getElementById("estado").value,
+                'manga_id': "{{form.id}}"
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(response){
+            return response.json()
+        }).then(function(jsonResponse) {
+            console.log(jsonResponse)            
+        });
+    }
+
+    
+    
+</script> 
 
 {% endblock %}

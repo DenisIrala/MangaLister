@@ -1,0 +1,56 @@
+{% extends "base2.html" %}
+{% block title %}{{ lista.nombre_lista }} {% endblock %}
+{% block content%}
+<br>
+<div class="editar">
+    <button><a href="javascript:abrir()">Editar</a></button>
+    <div class="ventana" id="show_ventana">
+        <div id="cerrar_ventana"><a href="javascript:cerrar()">&cross;</a></div>
+        <form  id="form_editlista">
+            <input type="text" id="newname" name="newname">
+            <button type="submit" class="button_lista" id="button_lista" value="submit">cambiar</button>
+        </form>
+    </div>
+    <button><a href="{{url_for('delete_lista', lista_id = lista.id)}}">Eliminar</a></button> <!--implementar el borrar-->
+</div>
+<div class="show_mangas">
+    {% for manga in mangas %}
+        <li>
+            <a href="{{url_for('get_manga', manga_id=manga[1])}}">{{manga[0]}}</a>
+            <button class="delete_button " data-id="{{manga[1]}}"><a href="{{url_for('delete_todo_by_id', lista_id = lista.id,todo_id = manga[1])}}">&cross;</a></button>
+        </li>
+    {% endfor %}
+
+</div>
+
+<script>
+    function abrir(){
+        document.getElementById("show_ventana").style.display="block";
+    }
+    function cerrar(){
+        document.getElementById("show_ventana").style.display="none";
+    }
+    document.getElementById("form_editlista").onsubmit = function(f){
+        f.preventDefault();
+        fetch('/update_lista', {
+            method: 'POST',
+            body: JSON.stringify({
+                'new_nombre': document.getElementById('newname').value,
+                'usuario': "{{user.id}}",
+                'lista_id':  "{{lista.id}}"
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(response){
+            return response.json()
+        }).then(function(jsonResponse) {
+            console.log(jsonResponse)            
+        });
+    };
+    
+
+
+    
+</script> 
+{% endblock %}

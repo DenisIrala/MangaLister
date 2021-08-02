@@ -1,29 +1,61 @@
-{% extends "user_main.html" %}
-{% block title %}biblioteca{% endblock %}
-{% block imagen_centro %}{% endblock %}
-{% block stilo_body %}{% endblock %}
-{% block recomendados %}{%endblock%}
+{% extends "base2.html" %}
+{% block title %}Añadir Manga{% endblock %}
 {% block content%}
-<div class="formulario_register form_manga">
+<div class="formulario_manga">
     <form method="POST"> 
         <h3 align="center">Agregar Nuevo Manga</h3>
-        <label class="form_label" for="nombre_manga">Nombre</label><br/>
-        <input type="text" class="form_block" id="nombre_manga" name="nombre_manga" placeholder="Nombre_manga">
-    
-        <label class="form_label" for="descripcion">Descripcion</label><br/>
-        <input type="text" class="form_block" id="descripcion" name="descripcion" placeholder="Descripcion">
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1" for="nombre_manga">Nombre</span>
+          </div>
+          <input type="text" class="form-control" id="nombre_manga" name="nombre_manga" placeholder="Nombre_manga" aria-label="Nombre_manga" aria-describedby="basic-addon1">
+        </div>
         
-        <label class="form_label" for="autor">Autor</label><br/>
-        <input type="text" class="form_block" id="autor" name="autor" placeholder="Autor">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1" for="Descripcion">Descripcion</span>
+          </div>
+          <input type="text" class="form-control" id="descripcion" name="descripcion" placeholder="Descripcion" aria-label="Descripcion" aria-describedby="basic-addon1" style="width:50px;">
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1" for="autor">Autor</span>
+          </div>
+          <input type="text" class="form-control" id="autor" name="autor" placeholder="Autor" aria-label="Autor" aria-describedby="basic-addon1">
+        </div>
         
-        <label class="form_label" for="nchap">Cantida de Capítulos</label><br/>
-        <input type="number" class="form_num" id="nchap" name="nchap" placeholder="Nchap">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1" for="nchap">Cantidad de Capítulos</span>
+          </div>
+          <input type="text" class="form-control" id="nchap" name="nchap" placeholder="# de Capitulos" aria-label="Nchap" aria-describedby="basic-addon1">
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1" for="autor">Demografia</span>
+            </div>
+            <input type="text" class="form-control" id="demografia" name="demografia" placeholder="Demografia" aria-label="Autor" aria-describedby="basic-addon1">
+        </div>
         
-        <label class="form_label" for="link">link</label><br/>
-        <input type="url" class="form_num" id="link" name="link" placeholder="Link">
-    
+
+        
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">https://www.example.com/users/</span>
+          </div>
+          <input type="text" class="form-control" id="link" name="link" placeholder="Link" aria-describedby="basic-addon3">
+        </div>
+          
+
+        
         <button type="submit" class="button_enviar">Enviar</button>
         
     </form>
-    </div>
+</div>
+{% endblock %}
+{% block script %}
+
+
 {% endblock %}
