@@ -96,7 +96,7 @@ def register():
  elif len(username) < 5:
  flash('
 ```
-#SPANISH
+# SPANISH
 
 ## Integrantes:
   * Denis Irala
