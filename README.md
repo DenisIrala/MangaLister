@@ -1,10 +1,5 @@
 # Manga Lister
 <p align="center">
-  <img  src="portada.png">
-</p>
-
-# Manga Lister
-<p align="center">
 <img src="portada.png">
 </p>
 
